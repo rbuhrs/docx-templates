@@ -130,6 +130,31 @@ Morbi dignissim consequat ex, non finibus est faucibus sodales. Integer sed just
         expect(result).toMatchSnapshot();
       });
 
+      it('05.1 Processes 1-level FOR loops with notes', async () => {
+        // this test succeeds but..
+        // notes in a FOR loop lead to 'unreadable content' error when opening generated doc in word
+        const template = await fs.promises.readFile(
+          path.join(__dirname, 'fixtures', 'for1WithNotes.docx')
+        );
+        const result = await createReport(
+          {
+          noSandbox,
+          template,
+          data: {
+            companies: [
+              { name: 'FIRST' },
+              { name: 'SECOND' },
+              { name: 'THIRD' },
+            ],
+          },
+        });
+        expect(result).toMatchSnapshot();
+        await fs.promises.writeFile(
+          path.join(__dirname, 'for1WithNotesOutput.docx'),
+          Buffer.from(result)
+        );
+      });
+
       it('06 Processes 2-level FOR loops', async () => {
         const template = await fs.promises.readFile(
           path.join(__dirname, 'fixtures', 'for2.docx')
